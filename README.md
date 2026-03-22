@@ -50,3 +50,7 @@ src/
 - **페이지 폴더 내부 (`pages/PageName/`)** — 특정 페이지에서만 사용되는 코드는 해당 페이지 폴더 안에 `components/`, `hooks/`, `constants/`, `utils/`로 역할에 따라 분리했습니다.
 
 - **공유 폴더 (`shared/`)** — 공통으로 사용되는 코드는 `shared/`로 분리했습니다. `pages/`와 동일하게 `components/`, `hooks/`, `constants/`, `utils/` 구조를 가집니다.
+
+### 2. 예약 현황 타임라인(ReservationTimeline) 컴포넌트 분리 - 인지 부하 해소의 관점에서
+
+- 페이지를 읽는 사람이 구현 세부사항을 파악하지 않아도 되도록 타임라인 렌더링에 필요한 상수(`TIMELINE_START`, `TOTAL_MINUTES` 등)와 툴팁 활성화 상태(`activeReservation`)를 `ReservationTimeline` 컴포넌트 내부로 이동했습니다. 페이지에서는 `rooms`와 `reservations`만 전달하면 되도록 인터페이스를 단순화했습니다.
