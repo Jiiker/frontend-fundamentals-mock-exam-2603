@@ -54,3 +54,8 @@ src/
 ### 2. 예약 현황 타임라인(ReservationTimeline) 컴포넌트 분리 - 인지 부하 해소의 관점에서
 
 - 페이지를 읽는 사람이 구현 세부사항을 파악하지 않아도 되도록 타임라인 렌더링에 필요한 상수(`TIMELINE_START`, `TOTAL_MINUTES` 등)와 툴팁 활성화 상태(`activeReservation`)를 `ReservationTimeline` 컴포넌트 내부로 이동했습니다. 페이지에서는 `rooms`와 `reservations`만 전달하면 되도록 인터페이스를 단순화했습니다.
+
+### 3. 내 예약 목록(MyReservationList) 컴포넌트 분리 - 인지 부하 해소의 관점에서
+
+- 내 예약 목록 UI 코드와 `getRoomName`을 컴포넌트 내부로 이동해 페이지에서 목록 렌더링 세부사항을 파악하지 않아도 되도록 했습니다.
+- `reservations`, `rooms`, `onCancel`은 페이지에서 props로 명시적으로 전달했습니다. 데이터 fetch와 취소 로직을 컴포넌트 안으로 숨기면 페이지에서 데이터 흐름을 추적하기 어려워지기 때문입니다.
