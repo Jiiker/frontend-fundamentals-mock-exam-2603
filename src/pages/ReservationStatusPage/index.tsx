@@ -30,64 +30,25 @@ export function ReservationStatusPage() {
   });
 
   return (
-    <div
-      css={css`
-        background: ${colors.white};
-        padding-bottom: 40px;
-      `}
-    >
-      <Top.Top03
-        css={css`
-          padding-left: 24px;
-          padding-right: 24px;
-        `}
-      >
-        회의실 예약
-      </Top.Top03>
+    <div css={css`background: ${colors.white}; padding-bottom: 40px;`}>
+      <Top.Top03 css={css`padding-left: 24px; padding-right: 24px;`}>회의실 예약</Top.Top03>
 
       <Spacing size={24} />
 
       {/* 날짜 선택 */}
-      <div
-        css={css`
-          padding: 0 24px;
-        `}
-      >
+      <div css={css`padding: 0 24px;`}>
         <Text typography="t5" fontWeight="bold" color={colors.grey900}>
           날짜 선택
         </Text>
         <Spacing size={16} />
-        <div
-          css={css`
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-          `}
-        >
+        <div css={css`display: flex; flex-direction: column; gap: 6px;`}>
           <input
             type="date"
             value={date}
             min={formatDate(new Date())}
             onChange={e => setDate(e.target.value)}
             aria-label="날짜"
-            css={css`
-              box-sizing: border-box;
-              font-size: 16px;
-              font-weight: 500;
-              line-height: 1.5;
-              height: 48px;
-              background-color: ${colors.grey50};
-              border-radius: 12px;
-              color: ${colors.grey800};
-              width: 100%;
-              border: 1px solid ${colors.grey200};
-              padding: 0 16px;
-              outline: none;
-              transition: border-color 0.15s;
-              &:focus {
-                border-color: ${colors.blue500};
-              }
-            `}
+            css={css`box-sizing: border-box; font-size: 16px; font-weight: 500; line-height: 1.5; height: 48px; background-color: ${colors.grey50}; border-radius: 12px; color: ${colors.grey800}; width: 100%; border: 1px solid ${colors.grey200}; padding: 0 16px; outline: none; transition: border-color 0.15s; &:focus { border-color: ${colors.blue500}; }`}
           />
         </div>
       </div>
@@ -97,11 +58,7 @@ export function ReservationStatusPage() {
       <Spacing size={24} />
 
       {/* 예약 현황 타임라인 */}
-      <div
-        css={css`
-          padding: 0 24px;
-        `}
-      >
+      <div css={css`padding: 0 24px;`}>
         <Text typography="t5" fontWeight="bold" color={colors.grey900}>
           예약 현황
         </Text>
@@ -115,20 +72,11 @@ export function ReservationStatusPage() {
 
       {/* 메시지 배너 */}
       {message && (
-        <div
-          css={css`
-            padding: 0 24px;
-          `}
-        >
+        <div css={css`padding: 0 24px;`}>
           <div
-            css={css`
-              padding: 10px 14px;
-              border-radius: 10px;
-              background: ${message.type === 'success' ? colors.blue50 : colors.red50};
-              display: flex;
-              align-items: center;
-              gap: 8px;
-            `}
+            css={css`padding: 10px 14px; border-radius: 10px; background: ${
+              message.type === 'success' ? colors.blue50 : colors.red50
+            }; display: flex; align-items: center; gap: 8px;`}
           >
             <Text
               typography="t7"
@@ -143,18 +91,8 @@ export function ReservationStatusPage() {
       )}
 
       {/* 내 예약 목록 */}
-      <div
-        css={css`
-          padding: 0 24px;
-        `}
-      >
-        <div
-          css={css`
-            display: flex;
-            align-items: baseline;
-            gap: 6px;
-          `}
-        >
+      <div css={css`padding: 0 24px;`}>
+        <div css={css`display: flex; align-items: baseline; gap: 6px;`}>
           <Text typography="t5" fontWeight="bold" color={colors.grey900}>
             내 예약
           </Text>
@@ -173,11 +111,7 @@ export function ReservationStatusPage() {
       <Spacing size={24} />
 
       {/* 예약하기 버튼 */}
-      <div
-        css={css`
-          padding: 0 24px;
-        `}
-      >
+      <div css={css`padding: 0 24px;`}>
         <Button display="full" onClick={() => navigate('/booking')}>
           예약하기
         </Button>
