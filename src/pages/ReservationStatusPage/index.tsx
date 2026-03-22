@@ -1,31 +1,22 @@
 import { css } from '@emotion/react';
-import { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { Top, Spacing, Border, Button, Text } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
-import { getRooms, getReservations, getMyReservations, cancelReservation } from 'pages/remotes';
+import { getRooms, getReservations, getMyReservations } from 'pages/remotes';
 import { formatDate } from 'shared/utils/common';
 
 import { ReservationTimeline } from './components/ReservationTimeline';
 import { MyReservationList } from './components/MyReservationList';
 
+import { useLocationMessage } from './hooks/useLocationMessage';
+import { useCancelReservation } from './hooks/useCancelReservation';
+
 export function ReservationStatusPage() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const queryClient = useQueryClient();
   const [date, setDate] = useState(formatDate(new Date()));
-
-  const locationState = location.state as { message?: string } | null;
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(
-    locationState?.message ? { type: 'success', text: locationState.message } : null
-  );
-
-  useEffect(() => {
-    if (locationState?.message) {
-      window.history.replaceState({}, '');
-    }
-  }, [locationState]);
+  const { message, setMessage } = useLocationMessage();
 
   const { data: rooms = [] } = useQuery(['rooms'], getRooms);
   const { data: reservations = [] } = useQuery(['reservations', date], () => getReservations(date), {
@@ -33,21 +24,10 @@ export function ReservationStatusPage() {
   });
   const { data: myReservationList = [] } = useQuery(['myReservations'], getMyReservations);
 
-  const cancelMutation = useMutation((id: string) => cancelReservation(id), {
-    onSuccess: () => {
-      queryClient.invalidateQueries(['reservations']);
-      queryClient.invalidateQueries(['myReservations']);
-    },
+  const { cancel } = useCancelReservation({
+    onSuccess: () => setMessage({ type: 'success', text: '예약이 취소되었습니다.' }),
+    onError: () => setMessage({ type: 'error', text: '취소에 실패했습니다.' }),
   });
-
-  const handleCancel = async (id: string) => {
-    try {
-      await cancelMutation.mutateAsync(id);
-      setMessage({ type: 'success', text: '예약이 취소되었습니다.' });
-    } catch {
-      setMessage({ type: 'error', text: '취소에 실패했습니다.' });
-    }
-  };
 
   return (
     <div
@@ -185,7 +165,7 @@ export function ReservationStatusPage() {
           )}
         </div>
         <Spacing size={16} />
-        <MyReservationList reservations={myReservationList} rooms={rooms} onCancel={handleCancel} />
+        <MyReservationList reservations={myReservationList} rooms={rooms} onCancel={cancel} />
       </div>
 
       <Spacing size={24} />

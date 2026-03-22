@@ -59,3 +59,8 @@ src/
 
 - 내 예약 목록 UI 코드와 `getRoomName`을 컴포넌트 내부로 이동해 페이지에서 목록 렌더링 세부사항을 파악하지 않아도 되도록 했습니다.
 - `reservations`, `rooms`, `onCancel`은 페이지에서 props로 명시적으로 전달했습니다. 데이터 fetch와 취소 로직을 컴포넌트 안으로 숨기면 페이지에서 데이터 흐름을 추적하기 어려워지기 때문입니다.
+
+### 4. ReservationStatusPage 훅 분리 - 구현 세부사항 은닉의 관점에서
+
+- `useLocationMessage` — `location.state` 처리, `message` 상태 관리, 메시지 초기화 로직을 훅 내부로 이동했습니다. 페이지에서는 메시지를 읽고 업데이트하는 인터페이스만 드러납니다.
+- `useCancelReservation` — 예약 취소 mutation 로직을 훅으로 분리했습니다. 성공/실패 시 어떤 메시지를 보여줄지는 페이지에서 `onSuccess`, `onError` 콜백으로 결정하도록 위임해 훅이 취소 로직에만 집중하도록 했습니다.
