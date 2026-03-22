@@ -2,7 +2,7 @@ import { css } from '@emotion/react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Top, Spacing, Border, Button, Text, Select, ListRow } from '_tosslib/components';
+import { Top, Spacing, Border, Button, Text, Select } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
 import { getRoomsQueryOptions, getReservationsQueryOptions } from 'shared/queries/reservation';
 import { ALL_EQUIPMENT, EQUIPMENT_LABELS } from 'shared/constants/reservation';
@@ -13,6 +13,8 @@ import { AvailableRoomList } from './components/AvailableRoomList';
 import { DatePicker } from 'shared/components/DatePicker';
 
 import { useCreateReservation } from './hooks/useCreateReservation';
+
+import { getAvailableRooms } from './utils/room';
 
 import axios from 'axios';
 
@@ -69,24 +71,8 @@ export function RoomBookingPage() {
 
   // 필터링
   const floors = [...new Set(rooms.map((r: { floor: number }) => r.floor))].sort((a: number, b: number) => a - b);
-
   const availableRooms = isFilterComplete
-    ? rooms
-        .filter((room: { id: string; capacity: number; equipment: string[]; floor: number }) => {
-          if (room.capacity < attendees) return false;
-          if (!equipment.every(eq => room.equipment.includes(eq))) return false;
-          if (preferredFloor !== null && room.floor !== preferredFloor) return false;
-          const hasConflict = reservations.some(
-            (r: { roomId: string; date: string; start: string; end: string }) =>
-              r.roomId === room.id && r.date === date && r.start < endTime && r.end > startTime
-          );
-          if (hasConflict) return false;
-          return true;
-        })
-        .sort((a: { floor: number; name: string }, b: { floor: number; name: string }) => {
-          if (a.floor !== b.floor) return a.floor - b.floor;
-          return a.name.localeCompare(b.name);
-        })
+    ? getAvailableRooms(rooms, reservations, { date, startTime, endTime, attendees, preferredFloor, equipment })
     : [];
 
   const handleBook = async () => {
