@@ -64,3 +64,8 @@ src/
 
 - `useLocationMessage` — `location.state` 처리, `message` 상태 관리, 메시지 초기화 로직을 훅 내부로 이동했습니다. 페이지에서는 메시지를 읽고 업데이트하는 인터페이스만 드러납니다.
 - `useCancelReservation` — 예약 취소 mutation 로직을 훅으로 분리했습니다. 성공/실패 시 어떤 메시지를 보여줄지는 페이지에서 `onSuccess`, `onError` 콜백으로 결정하도록 위임해 훅이 취소 로직에만 집중하도록 했습니다.
+
+### 5. 쿼리 옵션 분리 - 확장성과 유지보수의 관점에서
+
+- `queryKey`와 `queryFn`을 함께 정의한 쿼리 옵션 함수를 `queries/` 폴더로 분리했습니다. 두 페이지에서 공통으로 사용하는 쿼리는 `shared/queries/`에, 특정 페이지에서만 사용하는 쿼리는 페이지 폴더 내 `queries/`에 두었습니다.
+- `queryKey`를 상수로 분리해 `invalidateQueries` 호출 시 하드코딩된 키 대신 상수를 참조하도록 했습니다. 키가 변경될 때 한 곳만 수정하면 되고, 오타나 불일치로 인한 버그를 방지할 수 있습니다.

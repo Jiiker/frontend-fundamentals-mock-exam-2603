@@ -4,7 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Top, Spacing, Border, Button, Text } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
-import { getRooms, getReservations, getMyReservations } from 'pages/remotes';
+
+import { getRoomsQueryOptions, getReservationsQueryOptions } from 'shared/queries/reservation';
+import { getMyReservationsQueryOptions } from './queries/reservation';
+
 import { formatDate } from 'shared/utils/common';
 
 import { ReservationTimeline } from './components/ReservationTimeline';
@@ -18,11 +21,9 @@ export function ReservationStatusPage() {
   const [date, setDate] = useState(formatDate(new Date()));
   const { message, setMessage } = useLocationMessage();
 
-  const { data: rooms = [] } = useQuery(['rooms'], getRooms);
-  const { data: reservations = [] } = useQuery(['reservations', date], () => getReservations(date), {
-    enabled: !!date,
-  });
-  const { data: myReservationList = [] } = useQuery(['myReservations'], getMyReservations);
+  const { data: rooms = [] } = useQuery(getRoomsQueryOptions());
+  const { data: reservations = [] } = useQuery(getReservationsQueryOptions(date));
+  const { data: myReservationList = [] } = useQuery(getMyReservationsQueryOptions());
 
   const { cancel } = useCancelReservation({
     onSuccess: () => setMessage({ type: 'success', text: '예약이 취소되었습니다.' }),

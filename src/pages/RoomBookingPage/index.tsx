@@ -4,7 +4,10 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Top, Spacing, Border, Button, Text, Select, ListRow } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
-import { getRooms, getReservations, createReservation } from 'pages/remotes';
+
+import { getRoomsQueryOptions, getReservationsQueryOptions } from 'shared/queries/reservation';
+
+import { createReservation } from 'pages/remotes';
 import { ALL_EQUIPMENT, EQUIPMENT_LABELS } from 'shared/constants/reservation';
 import { TIME_SLOTS } from 'shared/constants/common';
 import { formatDate } from 'shared/utils/common';
@@ -40,10 +43,8 @@ export function RoomBookingPage() {
     setSearchParams(params, { replace: true });
   }, [date, startTime, endTime, attendees, equipment, preferredFloor, setSearchParams]);
 
-  const { data: rooms = [] } = useQuery(['rooms'], getRooms);
-  const { data: reservations = [] } = useQuery(['reservations', date], () => getReservations(date), {
-    enabled: !!date,
-  });
+  const { data: rooms = [] } = useQuery(getRoomsQueryOptions());
+  const { data: reservations = [] } = useQuery(getReservationsQueryOptions(date));
 
   const createMutation = useMutation(
     (data: { roomId: string; date: string; start: string; end: string; attendees: number; equipment: string[] }) =>
