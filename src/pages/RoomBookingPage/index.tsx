@@ -14,7 +14,7 @@ import { DatePicker } from 'shared/components/DatePicker';
 
 import { useCreateReservation } from './hooks/useCreateReservation';
 
-import { getAvailableRooms } from './utils/room';
+import { getAvailableRooms, validateBookingFilter } from './utils/room';
 
 import axios from 'axios';
 
@@ -58,15 +58,8 @@ export function RoomBookingPage() {
   };
 
   // 입력 검증
-  let validationError: string | null = null;
   const hasTimeInputs = startTime !== '' && endTime !== '';
-  if (hasTimeInputs) {
-    if (endTime <= startTime) {
-      validationError = '종료 시간은 시작 시간보다 늦어야 합니다.';
-    } else if (attendees < 1) {
-      validationError = '참석 인원은 1명 이상이어야 합니다.';
-    }
-  }
+  const validationError = hasTimeInputs ? validateBookingFilter({ startTime, endTime, attendees }) : null;
   const isFilterComplete = hasTimeInputs && !validationError;
 
   // 필터링
