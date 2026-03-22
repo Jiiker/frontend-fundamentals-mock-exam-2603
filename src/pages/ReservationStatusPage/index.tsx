@@ -25,10 +25,16 @@ export function ReservationStatusPage() {
   const { data: reservations = [] } = useQuery(getReservationsQueryOptions(date));
   const { data: myReservationList = [] } = useQuery(getMyReservationsQueryOptions());
 
-  const { cancel } = useCancelReservation({
-    onSuccess: () => setMessage({ type: 'success', text: '예약이 취소되었습니다.' }),
-    onError: () => setMessage({ type: 'error', text: '취소에 실패했습니다.' }),
-  });
+  const { cancelReservation } = useCancelReservation();
+
+  const handleCancel = async (id: string) => {
+    try {
+      await cancelReservation(id);
+      setMessage({ type: 'success', text: '예약이 취소되었습니다.' });
+    } catch {
+      setMessage({ type: 'error', text: '취소에 실패했습니다.' });
+    }
+  };
 
   return (
     <div css={css`background: ${colors.white}; padding-bottom: 40px;`}>
@@ -104,7 +110,7 @@ export function ReservationStatusPage() {
           )}
         </div>
         <Spacing size={16} />
-        <MyReservationList reservations={myReservationList} rooms={rooms} onCancel={cancel} />
+        <MyReservationList reservations={myReservationList} rooms={rooms} onCancel={handleCancel} />
       </div>
 
       <Spacing size={24} />

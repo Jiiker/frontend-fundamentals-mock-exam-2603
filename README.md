@@ -63,7 +63,7 @@ src/
 ### 4. ReservationStatusPage 훅 분리 - 구현 세부사항 은닉의 관점에서
 
 - `useLocationMessage` — `location.state` 처리, `message` 상태 관리, 메시지 초기화 로직을 훅 내부로 이동했습니다. 페이지에서는 메시지를 읽고 업데이트하는 인터페이스만 드러납니다.
-- `useCancelReservation` — 예약 취소 mutation 로직을 훅으로 분리했습니다. 성공/실패 시 어떤 메시지를 보여줄지는 페이지에서 `onSuccess`, `onError` 콜백으로 결정하도록 위임해 훅이 취소 로직에만 집중하도록 했습니다.
+- `useCancelReservation` — mutation 설정과 `queryClient.invalidateQueries` 로직을 훅 내부로 이동했습니다. 페이지에서는 `cancelReservation`을 받아 `handleCancel`에서 메시지 처리와 함께 사용합니다.
 
 ### 5. 쿼리 옵션 분리 - 확장성과 유지보수의 관점에서
 
