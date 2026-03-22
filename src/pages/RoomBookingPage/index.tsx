@@ -1,18 +1,20 @@
 import { css } from '@emotion/react';
-import { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Top, Spacing, Border, Button, Text, Select } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
+
 import { getRoomsQueryOptions, getReservationsQueryOptions } from 'shared/queries/reservation';
+
 import { ALL_EQUIPMENT, EQUIPMENT_LABELS } from 'shared/constants/reservation';
 import { TIME_SLOTS } from 'shared/constants/common';
-import { formatDate } from 'shared/utils/common';
 
 import { AvailableRoomList } from './components/AvailableRoomList';
 import { DatePicker } from 'shared/components/DatePicker';
 
 import { useCreateReservation } from './hooks/useCreateReservation';
+import { useBookingFilter } from './hooks/useBookingFilter';
 
 import { getAvailableRooms, validateBookingFilter } from './utils/room';
 
@@ -20,34 +22,25 @@ import axios from 'axios';
 
 export function RoomBookingPage() {
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const {
+    date,
+    setDate,
+    startTime,
+    setStartTime,
+    endTime,
+    setEndTime,
+    attendees,
+    setAttendees,
+    equipment,
+    setEquipment,
+    preferredFloor,
+    setPreferredFloor,
+  } = useBookingFilter();
 
-  const [date, setDate] = useState(searchParams.get('date') || formatDate(new Date()));
-  const [startTime, setStartTime] = useState(searchParams.get('startTime') || '');
-  const [endTime, setEndTime] = useState(searchParams.get('endTime') || '');
-  const [attendees, setAttendees] = useState(Number(searchParams.get('attendees')) || 1);
-  const [equipment, setEquipment] = useState<string[]>(
-    searchParams.get('equipment') ? searchParams.get('equipment')!.split(',').filter(Boolean) : []
-  );
-  const [preferredFloor, setPreferredFloor] = useState<number | null>(
-    searchParams.get('floor') ? Number(searchParams.get('floor')) : null
-  );
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const { createReservation, isLoading } = useCreateReservation();
-
-  // URL 쿼리 파라미터 동기화
-  useEffect(() => {
-    const params: Record<string, string> = {};
-    if (date) params.date = date;
-    if (startTime) params.startTime = startTime;
-    if (endTime) params.endTime = endTime;
-    if (attendees > 1) params.attendees = String(attendees);
-    if (equipment.length > 0) params.equipment = equipment.join(',');
-    if (preferredFloor !== null) params.floor = String(preferredFloor);
-    setSearchParams(params, { replace: true });
-  }, [date, startTime, endTime, attendees, equipment, preferredFloor, setSearchParams]);
 
   const { data: rooms = [] } = useQuery(getRoomsQueryOptions());
   const { data: reservations = [] } = useQuery(getReservationsQueryOptions(date));

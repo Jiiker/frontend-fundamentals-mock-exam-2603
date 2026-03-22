@@ -83,3 +83,7 @@ src/
 
 - 페이지 본문에 인라인으로 있던 필터링 + 정렬 로직을 `getAvailableRooms` 함수로 분리해 `RoomBookingPage/utils/room.ts`에 두었습니다. 페이지에서는 필터링 세부사항을 파악하지 않아도 되고, 순수 함수라 독립적으로 테스트할 수 있습니다.
 - 유효성 검사 로직을 `validateBookingFilter` 함수로 분리했습니다. 시간 범위, 참석 인원 등 검증 규칙을 한 곳에서 관리할 수 있습니다.
+
+### 9. RoomBookingPage 훅 분리 - 구현 세부사항 은닉의 관점에서
+
+- `useBookingFilter` — 필터 상태 6개(`date`, `startTime`, `endTime`, `attendees`, `equipment`, `preferredFloor`)와 URL 쿼리 파라미터 동기화 로직을 훅 내부로 이동했습니다. 페이지에서는 필터 상태를 읽고 업데이트하는 인터페이스만 드러납니다.
