@@ -65,10 +65,11 @@ src/
 - `useLocationMessage` — `location.state` 처리, `message` 상태 관리, 메시지 초기화 로직을 훅 내부로 이동했습니다. 페이지에서는 메시지를 읽고 업데이트하는 인터페이스만 드러납니다.
 - `useCancelReservation` — mutation 설정과 `queryClient.invalidateQueries` 로직을 훅 내부로 이동했습니다. 페이지에서는 `cancelReservation`을 받아 `handleCancel`에서 메시지 처리와 함께 사용합니다.
 
-### 5. 쿼리 옵션 분리 - 확장성과 유지보수의 관점에서
+### 5. 쿼리 옵션 분리 - 확장성과 유지보수, 추상화의 관점에서
 
 - `queryKey`와 `queryFn`을 함께 정의한 쿼리 옵션 함수를 `queries/` 폴더로 분리했습니다. 두 페이지에서 공통으로 사용하는 쿼리는 `shared/queries/`에, 특정 페이지에서만 사용하는 쿼리는 페이지 폴더 내 `queries/`에 두었습니다.
 - `queryKey`를 상수로 분리해 `invalidateQueries` 호출 시 하드코딩된 키 대신 상수를 참조하도록 했습니다. 키가 변경될 때 한 곳만 수정하면 되고, 오타나 불일치로 인한 버그를 방지할 수 있습니다.
+- 서버 상태 접근 방식을 쿼리 옵션 함수로 추상화해 호출하는 쪽에서 `queryKey`와 `queryFn`의 세부사항을 알지 않아도 되도록 했습니다.
 
 ### 6. RoomBookingPage 훅 분리 - 구현 세부사항 은닉의 관점에서
 
@@ -79,11 +80,13 @@ src/
 - 두 페이지에서 동일한 스타일과 동작으로 사용되는 날짜 선택 UI를 `DatePicker` 컴포넌트로 분리해 `shared/components/`에 두었습니다.
 - `type="date"`와 `min={formatDate(new Date())}`는 일반적으로 현재 시점부터 선택 가능한 경우가 많을 것으로 판단돼 컴포넌트 내부에서 처리하도록 했고, 나머지 props는 `...props`로 확장성을 열어두었습니다.
 
-### 8. 예약 가능 회의실 필터링 및 유효성 검사 로직 분리 - 인지 부하 해소의 관점에서
+### 8. 예약 가능 회의실 필터링 및 유효성 검사 로직 분리 - 인지 부하 해소, 추상화의 관점에서
 
 - 페이지 본문에 인라인으로 있던 필터링 + 정렬 로직을 `getAvailableRooms` 함수로 분리해 `RoomBookingPage/utils/room.ts`에 두었습니다. 페이지에서는 필터링 세부사항을 파악하지 않아도 되고, 순수 함수라 독립적으로 테스트할 수 있습니다.
 - 유효성 검사 로직을 `validateBookingFilter` 함수로 분리했습니다. 시간 범위, 참석 인원 등 검증 규칙을 한 곳에서 관리할 수 있습니다.
+- 두 함수 모두 필터링과 검증이라는 비즈니스 규칙을 추상화해 조건이 추가되거나 변경되어도 페이지는 영향을 받지 않도록 했습니다.
 
-### 9. RoomBookingPage 훅 분리 - 구현 세부사항 은닉의 관점에서
+### 9. RoomBookingPage 훅 분리 - 구현 세부사항 은닉, 추상화의 관점에서
 
 - `useBookingFilter` — 필터 상태 6개(`date`, `startTime`, `endTime`, `attendees`, `equipment`, `preferredFloor`)와 URL 쿼리 파라미터 동기화 로직을 훅 내부로 이동했습니다. 페이지에서는 필터 상태를 읽고 업데이트하는 인터페이스만 드러납니다.
+- URL 파라미터와 필터 상태를 "예약 필터"라는 도메인 개념으로 추상화해 내부 구현이 바뀌어도 페이지는 영향받지 않도록 했습니다.
