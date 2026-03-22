@@ -1,21 +1,18 @@
 import { css } from '@emotion/react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Top, Spacing, Border, Button, Text, Select, ListRow } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
-
 import { getRoomsQueryOptions, getReservationsQueryOptions } from 'shared/queries/reservation';
-
-import { createReservation } from 'pages/remotes';
 import { ALL_EQUIPMENT, EQUIPMENT_LABELS } from 'shared/constants/reservation';
 import { TIME_SLOTS } from 'shared/constants/common';
 import { formatDate } from 'shared/utils/common';
+import { useCreateReservation } from './hooks/useCreateReservation';
 import axios from 'axios';
 
 export function RoomBookingPage() {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [date, setDate] = useState(searchParams.get('date') || formatDate(new Date()));
@@ -30,6 +27,8 @@ export function RoomBookingPage() {
   );
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const { createReservation, isLoading } = useCreateReservation();
 
   // URL 쿼리 파라미터 동기화
   useEffect(() => {
@@ -46,18 +45,6 @@ export function RoomBookingPage() {
   const { data: rooms = [] } = useQuery(getRoomsQueryOptions());
   const { data: reservations = [] } = useQuery(getReservationsQueryOptions(date));
 
-  const createMutation = useMutation(
-    (data: { roomId: string; date: string; start: string; end: string; attendees: number; equipment: string[] }) =>
-      createReservation(data),
-    {
-      onSuccess: (_data, variables) => {
-        queryClient.invalidateQueries(['reservations', variables.date]);
-        queryClient.invalidateQueries(['myReservations']);
-      },
-    }
-  );
-
-  // 필터 변경 시 선택 초기화
   const handleFilterChange = () => {
     setSelectedRoomId(null);
     setErrorMessage(null);
@@ -108,7 +95,7 @@ export function RoomBookingPage() {
     }
 
     try {
-      const result = await createMutation.mutateAsync({
+      const result = await createReservation({
         roomId: selectedRoomId,
         date,
         start: startTime,
@@ -393,8 +380,8 @@ export function RoomBookingPage() {
           )}
 
           <Spacing size={16} />
-          <Button display="full" onClick={handleBook} disabled={createMutation.isLoading}>
-            {createMutation.isLoading ? '예약 중...' : '확정'}
+          <Button display="full" onClick={handleBook} disabled={isLoading}>
+            {isLoading ? '예약 중...' : '확정'}
           </Button>
         </div>
       )}

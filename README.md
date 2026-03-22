@@ -69,3 +69,7 @@ src/
 
 - `queryKey`와 `queryFn`을 함께 정의한 쿼리 옵션 함수를 `queries/` 폴더로 분리했습니다. 두 페이지에서 공통으로 사용하는 쿼리는 `shared/queries/`에, 특정 페이지에서만 사용하는 쿼리는 페이지 폴더 내 `queries/`에 두었습니다.
 - `queryKey`를 상수로 분리해 `invalidateQueries` 호출 시 하드코딩된 키 대신 상수를 참조하도록 했습니다. 키가 변경될 때 한 곳만 수정하면 되고, 오타나 불일치로 인한 버그를 방지할 수 있습니다.
+
+### 6. RoomBookingPage 훅 분리 - 구현 세부사항 은닉의 관점에서
+
+- `useCreateReservation` — mutation 설정과 `queryClient.invalidateQueries` 로직을 훅 내부로 이동했습니다. 페이지에서는 `createReservation`을 받아 `handleBook`에서 검증, 에러 처리, 페이지 이동 로직과 함께 사용합니다.

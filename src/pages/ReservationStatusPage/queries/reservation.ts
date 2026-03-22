@@ -1,6 +1,5 @@
 import { getMyReservations, cancelReservation } from 'pages/remotes';
-
-export const MY_RESERVATIONS_QUERY_KEY = ['myReservations'] as const;
+import { MY_RESERVATIONS_QUERY_KEY } from 'shared/queries/reservation';
 
 export function getMyReservationsQueryOptions() {
   return {

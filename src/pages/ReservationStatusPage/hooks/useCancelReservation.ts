@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { cancelReservationMutation, MY_RESERVATIONS_QUERY_KEY } from '../queries/reservation';
-import { RESERVATIONS_QUERY_KEY } from 'shared/queries/reservation';
+import { cancelReservationMutation } from '../queries/reservation';
+import { MY_RESERVATIONS_QUERY_KEY, RESERVATIONS_QUERY_KEY } from 'shared/queries/reservation';
 
 export function useCancelReservation() {
   const queryClient = useQueryClient();
