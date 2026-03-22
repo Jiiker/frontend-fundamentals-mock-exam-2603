@@ -73,3 +73,8 @@ src/
 ### 6. RoomBookingPage 훅 분리 - 구현 세부사항 은닉의 관점에서
 
 - `useCreateReservation` — mutation 설정과 `queryClient.invalidateQueries` 로직을 훅 내부로 이동했습니다. 페이지에서는 `createReservation`을 받아 `handleBook`에서 검증, 에러 처리, 페이지 이동 로직과 함께 사용합니다.
+
+### 7. DatePicker 공통 컴포넌트 분리 - 사용 범위에 따른 코드 배치의 관점에서
+
+- 두 페이지에서 동일한 스타일과 동작으로 사용되는 날짜 선택 UI를 `DatePicker` 컴포넌트로 분리해 `shared/components/`에 두었습니다.
+- `type="date"`와 `min={formatDate(new Date())}`는 일반적으로 현재 시점부터 선택 가능한 경우가 많을 것으로 판단돼 컴포넌트 내부에서 처리하도록 했고, 나머지 props는 `...props`로 확장성을 열어두었습니다.

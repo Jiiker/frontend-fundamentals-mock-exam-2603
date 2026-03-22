@@ -10,6 +10,7 @@ import { TIME_SLOTS } from 'shared/constants/common';
 import { formatDate } from 'shared/utils/common';
 
 import { AvailableRoomList } from './components/AvailableRoomList';
+import { DatePicker } from 'shared/components/DatePicker';
 
 import { useCreateReservation } from './hooks/useCreateReservation';
 
@@ -168,16 +169,13 @@ export function RoomBookingPage() {
           <Text as="label" typography="t7" fontWeight="medium" color={colors.grey600}>
             날짜
           </Text>
-          <input
-            type="date"
+          <DatePicker
             value={date}
-            min={formatDate(new Date())}
             onChange={e => {
               setDate(e.target.value);
               handleFilterChange();
             }}
             aria-label="날짜"
-            css={css`box-sizing: border-box; font-size: 16px; font-weight: 500; line-height: 1.5; height: 48px; background-color: ${colors.grey50}; border-radius: 12px; color: ${colors.grey800}; width: 100%; border: 1px solid ${colors.grey200}; padding: 0 16px; outline: none; transition: border-color 0.15s; &:focus { border-color: ${colors.blue500}; }`}
           />
         </div>
         <Spacing size={14} />
